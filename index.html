@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Web page CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <!-- Favicons -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/favicon-16x16.png"
+    />
+
+    <title>Stream Runtime Verification</title>
+  </head>
+  <body>
+    <nav>
+      <a href="#" class="logo">
+        <h1>
+          <span class="jab">Stream</span> <span class="tv">Runtime Verification</span>
+        </h1>
+      </a>
+
+      <!-- Dark/light theme switcher -->
+      <div class="theme-switch">
+        <input type="checkbox" class="checkbox" id="checkbox" />
+        <label for="checkbox" class="label">
+          <ion-icon name="sunny-outline" class="sun"></ion-icon>
+          <ion-icon name="moon-outline" class="moon"></ion-icon>
+          <div class="switcher"></div>
+        </label>
+      </div>
+
+      <ul>
+        <li>
+          <a href="#about" class="nav-link" id="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+          <a href="#projects" class="nav-link" id="nav-link">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a href="#bibliography" class="nav-link" id="nav-link">Bibliography</a>
+        </li>
+      </ul>
+
+      <!-- Bars -->
+      <div class="hamburger" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </nav>
+
+    <!-- Content section -->
+    <section class="content" id="content">
+      <h1 id="table-of-contents">Table of contents</h1>
+      <ol class="example" type="1">
+      <li><a href="#about">About</a></li>
+      <li><a href="#onlinevsoffline">Online vs. offline
+      monitoring</a></li>
+      <li><a href="#synchasynch">Synchronous vs. asynchronous
+      SRV</a></li>
+      <li><a href="#features">Language features</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#bibliography">Bibliography</a></li>
+      </ol>
+      <h2 id="about">1. About</h2>
+      <p>Runtime verification (RV) is a dynamic technique for software
+      quality assurance that consists of generating a monitor from a
+      formal specification. At runtime, the monitor inspects traces of
+      the execution of the system under analysis, detecting violations
+      of the specification.</p>
+      <figure>
+      <img src="assets/images/srv.svg" width="600"
+      alt="SRV architecture" />
+      <figcaption aria-hidden="true">SRV architecture</figcaption>
+      </figure>
+      <p>Motivated by the counterparts in static verification, early RV
+      specification languages were based on temporal logics <sup>[<a
+      href="#havelund02synthesizing">1</a>, <a
+      href="#eisner03reasoning">2</a>, <a
+      href="#bauer11runtime">3</a>]</sup>, regular expressions <sup>[<a
+      href="#sen03generating">4</a>]</sup>, timed regular expressions
+      <sup>[<a href="#TRE">5</a>]</sup>, rules <sup>[<a
+      href="#barringer04rule">6</a>]</sup>, or rewriting <sup>[<a
+      href="#rosu05rewriting">7</a>]</sup>. Stream runtime verification
+      (SRV), pioneered by Lola <sup>[<a
+      href="#dangelo05lola">8</a>]</sup>, defines monitors declaratively
+      by equations that define the dependencies between output streams
+      of results and input streams of observations, where the types of
+      the streams and operations can be rich types of data. Unlike
+      logical techniques, that compute Boolean verdicts, SRV allows rich
+      observations and verdicts. Examples include counting events,
+      specifying and computing robustness values, generating models,
+      quantitative verdicts and calculating target spatial coordinates.
+      See <sup>[<a href="#dangelo05lola">8</a>, <a
+      href="#faymonville16stream">9</a>, <a
+      href="#gorostiaga21striver">10</a>, <a
+      href="#danielsson19decentralized">11</a>]</sup> for examples
+      illustrating the expressivity of SRV languages. The keystone of
+      SRV is to separate two concerns: the temporal dependencies and the
+      data manipulated. The temporal dependencies are inspired by the
+      algorithms to monitor temporal logics which essentially capture
+      the order of operations in monitoring algorithms. The data
+      manipulation describes how to perform each individual operation
+      and each element of storage that the monitor handles. The data
+      stored and computed is modeled as data types (data theories in the
+      jargon of SRV) whose implementation is independent of the model of
+      time. Most system include a handful of wired data types
+      (e.g. <sup>[<a href="#dangelo05lola">8</a>, <a
+      href="#faymonville19streamlab">12</a>, <a
+      href="#convent18tessla">13</a>]</sup>) but others study how to
+      transparently incorporate data-types from programming languages
+      <sup>[<a href="#ceresa20declarative">14</a>]</sup>.</p>
+      <h3 id="runtime-verification-vs.-static-verification.">Runtime
+      verification vs. static verification.</h3>
+      <p>Static verification techniques like model checking intend to
+      show that every (infinite) run of a system satisfies a given
+      specification, while runtime verification is concerned only with a
+      single (finite) trace. Thus, RV sacrifices completeness to provide
+      an applicable formal extension of testing. See <sup>[<a
+      href="#leucker09brief">15</a>, <a
+      href="#havelund05verify">16</a>]</sup> for modern surveys on
+      runtime verification and the recent book <sup>[<a
+      href="#bartocci18lectures">17</a>]</sup>.</p>
+      <h2 id="onlinevsoffline">2. Online vs. offline monitoring</h2>
+      <p>There are two kinds of monitoring algorithms in RV depending on
+      when the trace is generated and processed. In online monitoring
+      the monitor checks the trace while the system runs, while in
+      offline monitoring a finite collection of previously generated
+      traces are analyzed. Online monitoring is used to detect
+      violations of the specification when the system is in operation,
+      while offline monitoring is used in post-mortem analysis and for
+      testing large systems before deployment.</p>
+      <p>The online monitoring problem of past specifications can be
+      solved efficiently using constant space and linear time in the
+      trace size. For future properties, on the other hand, the space
+      requirement depends on the length of the trace for rich types
+      (even though for LTL, that is for the verdict domain of the
+      Booleans, one can use automata techniques to reduce the necessary
+      space to exponential in the size of the specification).
+      Consequently, online monitoring of future temporal formulas
+      quickly becomes intractable in practical applications with long
+      traces. On the other hand, the offline monitoring problem for
+      LTL-like logics is known to be easy for purely past or purely
+      future properties. We detail in the paper a syntactic
+      characterization of <em>efficiently monitorable</em>
+      specifications (introduced in <sup>[<a
+      href="#dangelo05lola">8</a>]</sup>), for which the space
+      requirement of the online monitoring algorithm is independent of
+      the size of the trace, and linear in the specification size. This
+      property was later popularized as <em>trace length
+      independence</em> <sup>[<a href="#bauer13from">18</a>]</sup> and
+      is a very desirable property as it allows online monitors to scale
+      to arbitrarily large traces. In practice, most properties of
+      interest in online monitoring can be expressed as efficiently
+      monitorable properties. For the offline monitoring problem, there
+      is an efficient monitoring strategy in the presence of arbitrary
+      past and future combinations by scheduling trace length
+      independent passes. An execution of the monitor extracted from a
+      Lola specification computes data values at each position by
+      evaluating the expressions over streams of input, incrementally
+      computing the output streams.</p>
+      <h2 id="synchasynch">3. Synchronous vs. asynchronous SRV</h2>
+      <p>Different temporal algorithms exist for different notions of
+      time. Early SRV works consider streams to be synchronized
+      sequences of data (like in LTL semantics), so data observed in
+      different streams at the same index in their sequences are
+      considered to have occurred at the same time. Examples of
+      synchronous SRV formalisms include the original Lola <sup>[<a
+      href="#dangelo05lola">8</a>]</sup> and systems like Copilot
+      <sup>[<a href="#pike10copilot">19</a>]</sup>. Other formalisms
+      that can be easily described using SRV include Mission-time LTL
+      <sup>[<a href="#reinbacher14temporal">20</a>]</sup> and Functional
+      Reactive Programming (FRP) <sup>[<a
+      href="#eliot97functional">21</a>]</sup>. Synchronous languages,
+      like Lustre <sup>[<a href="#halbwachs91synchronous">22</a>]</sup>,
+      Esterel <sup>[<a href="#berry00foundations">23</a>]</sup> and
+      Signal <sup>[<a href="#gautier87signal">24</a>]</sup> also define
+      relations between input and output values but these are designed
+      to express behaviors so they assume causality and forbid future
+      references, while in SRV future references are allowed to describe
+      monitors that depend on future observations.</p>
+      <p>There have been approaches to extend SRV to real-time event
+      streams, including RTLola <sup>[<a
+      href="#faymonville17realtime">25</a>]</sup>, TeSSLa <sup>[<a
+      href="#convent18tessla">13</a>]</sup> and Striver <sup>[<a
+      href="#gorostiaga21striver">10</a>]</sup>, which consider streams
+      to be sequences of timed events. Events contain data and are
+      time-stamped with the instant of time at which the data is
+      produced (either observed or generated). The time stamps of a
+      stream must be monotonically increasing, but the events at a given
+      index in two different streams can have arbitrary time stamps.
+      These formalisms are known as asynchronous or real-time SRV. See
+      <sup>[<a href="#gorostiaga20unifying">26</a>]</sup> for a
+      expressiveness comparison between synchronous time and
+      asynchronous SRV.</p>
+      <figure>
+      <img src="assets/images/synchasynch.svg" width="600"
+      alt="Synchronous vs. asynchronous streams" />
+      <figcaption aria-hidden="true">Synchronous vs. asynchronous
+      streams</figcaption>
+      </figure>
+      <h2 id="features">4. Language features</h2>
+      <h3 id="static-parameterization">Static parameterization</h3>
+      <p>Static parametrization is a feature of some SRV systems which
+      allows defining an abstract specification and instantiate it with
+      concrete values later on. This is useful to reuse repetitive
+      specifications and capture the essence of a stream definition,
+      abstracting away the irrelevant specific values This feature is
+      implemented in Lola2.0 <sup>[<a
+      href="#faymonville16stream">9</a>]</sup> as well as in TeSSLa
+      <sup>[<a href="#convent18tessla">13</a>]</sup> using an ad-hoc
+      macro feature in the tool chain; and in HLola <sup>[<a
+      href="#ceresa20declarative">14</a>]</sup> and HStriver <sup>[<a
+      href="#gorostiaga21hstriver">27</a>]</sup> as functions in the
+      host language.</p>
+      <h3 id="dynamic-parameterization">Dynamic parameterization</h3>
+      <p>Some tools like Lola2.0 <sup>[<a
+      href="#faymonville16stream">9</a>]</sup> offer the possibility of
+      instantiating a parameterized stream with values that are
+      discovered in the middle of a trace.</p>
+      <h2 id="projects">5. Projects</h2>
+      <h3 id="srv-and-temporal-task-planning">SRV and Temporal Task
+      Planning</h3>
+      <p>Temporal task planning guarantees a robot will succeed in its
+      task as long as certain explicit and implicit assumptions about
+      the robot’s operating environment, sensors, and capabilities hold.
+      A robot executing a plan can <em>silently fail</em> to fulfill the
+      task if the assumptions are violated at runtime. Monitoring
+      assumption violations at runtime can flag silent failures and also
+      provide mitigation and remediation opportunities. However, this
+      requires means for describing assumptions combining temporal and
+      quantitative data, automatic construction of correct monitors and
+      ensuring a correct interplay between the planning execution and
+      monitors.</p>
+      <p>In this project <sup>[<a
+      href="#zudaire21assumption">28</a>]</sup> we propose combining
+      temporal planning with stream runtime verification, which offers a
+      high-level language to describe monitors together with guarantees
+      on execution time and memory usage. We demonstrate our approach
+      both in real and simulated flights for some typical mission
+      scenarios.</p>
+      <div class="i-frame">
+      <p><iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/3lVxiFWCYE4"
+          title="YouTube video player"
+          frameborder="10"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe></p>
+      <h2 id="bibliography">6. Bibliography</h2>
+      <ol type="1">
+      <li>K. Havelund, G. Roşu. <strong>Synthesizing monitors for safety
+      properties</strong>. In: <em>Proc. Of TACAS’02</em>
+      (2002).<a name="havelund02synthesizing"></a></li>
+      <li>C. Eisner, D. Fisman, J. Havlicek, Y. Lustig, A. McIsaac, D.
+      Campenhout. <strong>Reasoning with temporal logic on truncated
+      paths</strong>. In: <em>Proc. Of CAV’03</em>
+      (2003).<a name="eisner03reasoning"></a></li>
+      <li>A. Bauer, M. Leucker, C. Schallhart. <strong>Runtime
+      verification for LTL and TLTL</strong>. In: <em>ACM T. Softw. Eng.
+      Meth.</em> (2011).<a name="bauer11runtime"></a></li>
+      <li>K. Sen, G. Roşu. <strong>Generating optimal monitors for
+      extended regular expressions</strong>. In: <em>ENTCS</em>
+      (2003).<a name="sen03generating"></a></li>
+      <li>E. Asarin, P. Caspi, O. Maler. <strong>Timed regular
+      expressions</strong>. In: <em>J. ACM</em>
+      (2002).<a name="TRE"></a></li>
+      <li>H. Barringer, A. Goldberg, K. Havelund, K.
+      Sen. <strong>Rule-based runtime verification</strong>. In:
+      <em>Proc. Of VMCAI’04</em>
+      (2004).<a name="barringer04rule"></a></li>
+      <li>G. Roşu, K. Havelund. <strong>Rewriting-based techniques for
+      runtime verification.</strong>. In: <em>Automated Software
+      Engineering</em> (2005).<a name="rosu05rewriting"></a></li>
+      <li>B. D’Angelo, S. Sankaranarayanan, C. Sánchez, W. Robinson, B.
+      Finkbeiner, H. Sipma, S. Mehrotra, Z. Manna. <strong>LOLA: Runtime
+      monitoring of synchronous systems</strong>. In: <em>Proc. Of
+      TIME’05</em> (2005).<a name="dangelo05lola"></a></li>
+      <li>P. Faymonville, B. Finkbeiner, S. Schirmer, H. Torfah.
+      <strong>A stream-based specification language for network
+      monitoring</strong>. In: <em>Proc. Of RV’16</em>
+      (2016).<a name="faymonville16stream"></a><a href="https://doi.org/10.1007/978-3-319-46982-9_10" target="_blank" class="doilogo">DOI</a></li>
+      <li>F. Gorostiaga, C. Sánchez. <strong>Stream runtime verification
+      of real-time event streams with the striver language</strong>. In:
+      <em>International Journal on Software Tools for Technology
+      Transfer</em>
+      (2021).<a name="gorostiaga21striver"></a><a href="https://doi.org/10.1007/s10009-021-00605-3" target="_blank" class="doilogo">DOI</a></li>
+      <li>L. Danielsson, C. Sánchez. <strong>Decentralized stream
+      runtime verification</strong>. In: <em>Runtime verification - 19th
+      international conference, RV 2019, porto, portugal, october 8-11,
+      2019, proceedings</em>
+      (2019).<a name="danielsson19decentralized"></a><a href="https://doi.org/10.1007/978-3-030-32079-9\_11" target="_blank" class="doilogo">DOI</a></li>
+      <li>P. Faymonville, B. Finkbeiner, M. Schledjewski, M. Schwenger,
+      M. Stenger, L. Tentrup, T. Hazem. <strong>StreamLAB: Stream-based
+      monitoring of cyber-physical systems</strong>. In: <em>Proc. Of
+      CAV’19</em> (2019).<a name="faymonville19streamlab"></a></li>
+      <li>L. Convent, S. Hungerecker, M. Leucker, T. Scheffel, M.
+      Schmitz, D. Thoma. <strong>TeSSLa: Temporal stream-based
+      specification language</strong>. In: <em>Proc. Of SBMF’18</em>
+      (2018).<a name="convent18tessla"></a></li>
+      <li>M. Ceresa, F. Gorostiaga, C. Sánchez. <strong>Declarative
+      stream runtime verification (hLola)</strong>. In: <em>Proc. Of the
+      18th asian symposium on programming languages and systems
+      (APLAS’20)</em>
+      (2020).<a name="ceresa20declarative"></a><a href="https://doi.org/10.1007/978-3-030-64437-6_2" target="_blank" class="doilogo">DOI</a></li>
+      <li>M. Leucker, C. Schallhart. <strong>A brief account of runtime
+      verification</strong>. In: <em>J. Logic Algebr. Progr.</em>
+      (2009).<a name="leucker09brief"></a></li>
+      <li>K. Havelund, A. Goldberg. <strong>Verify your runs</strong>.
+      In: <em>Proc. Of VSTTE’05</em>
+      (2005).<a name="havelund05verify"></a></li>
+      <li>E. Bartocci, Y. Falcone. <strong>Lectures on runtime
+      verification - introductory and advanced topics</strong>
+      (2018).<a name="bartocci18lectures"></a></li>
+      <li>A. Bauer, J. Küster, G. Vegliach. <strong>From propositional
+      to first-order monitoring</strong>. In: <em>Proc. Of RV’13</em>
+      (2013).<a name="bauer13from"></a></li>
+      <li>L. Pike, A. Goodloe, R. Morisset, S. Niller. <strong>Copilot:
+      A hard real-time runtime monitor</strong>. In: <em>Proc. Of
+      RV’10</em> (2010).<a name="pike10copilot"></a></li>
+      <li>T. Reinbacher, K. Rozier, J. Schumann. <strong>Temporal-logic
+      based runtime observer pairs for system health management of
+      real-time systems</strong>. In: <em>Proc. 20th int. Conf. On tools
+      and algorithms for the construction and analysis of systems
+      (TACAS’14)</em> (2014).<a name="reinbacher14temporal"></a></li>
+      <li>C. Eliot, P. Hudak. <strong>Functional reactive
+      animation</strong>. In: <em>Proc. Of ICFP’07</em>
+      (1997).<a name="eliot97functional"></a></li>
+      <li>N. Halbwachs, P. Caspi, P. Raymond, D. Pilaud. <strong>The
+      synchronous data-flow programming language LUSTRE</strong>. In:
+      <em>Proceedings of the IEEE</em>
+      (1991).<a name="halbwachs91synchronous"></a><a href="https://doi.org/10.1109/5.97300" target="_blank" class="doilogo">DOI</a></li>
+      <li>G. Berry. <strong>Proof, language, and interaction: Essays in
+      honour of Robin Milner</strong>. In: <em>The foundations of
+      Esterel</em> (2000).<a name="berry00foundations"></a></li>
+      <li>T. Gautier, P. Le Guernic, L. Besnard. <strong>SIGNAL: A
+      declarative language for synchronous programming of real-time
+      systems</strong>. In: <em>Proc. Of the conf. On functional
+      programming languages and computer architecture</em>
+      (1987).<a name="gautier87signal"></a><a href="https://doi.org/10.1007/3-540-18317-5\_15" target="_blank" class="doilogo">DOI</a></li>
+      <li>P. Faymonville, B. Finkbeiner, M. Schwenger, H. Torfah.
+      <strong>Real-time stream-based monitoring</strong>. In:
+      <em>CoRR</em> (2017).<a name="faymonville17realtime"></a></li>
+      <li>F. Gorostiaga, L. Danielsson, C. Sánchez. <strong>Unifying the
+      time-event spectrum for stream runtime verification</strong>. In:
+      <em>Proc. Of 20th int’l conf. On runtime verification (RV’20)</em>
+      (2020).<a name="gorostiaga20unifying"></a><a href="https://doi.org/10.1007/978-3-030-60508-7\_26" target="_blank" class="doilogo">DOI</a></li>
+      <li>F. Gorostiaga, C. Sánchez. <strong>HStriver: A very functional
+      extensible tool for the runtime verification of real-time event
+      streams</strong>. In: <em>Formal methods</em>
+      (2021).<a name="gorostiaga21hstriver"></a><a href="https://doi.org/10.1007/978-3-030-90870-6\_30" target="_blank" class="doilogo">DOI</a></li>
+      <li>S. Zudaire, F. Gorostiaga, C. Sánchez, G. Schneider, S.
+      Uchitel. <strong>Assumption monitoring using runtime verification
+      for UAV temporal task plan executions</strong>. In: <em>Proc. Of
+      IEEE international conference on robotics and automation
+      (ICRA’21)</em>
+      (2021).<a name="zudaire21assumption"></a><a href="https://doi.org/10.1109/ICRA48506.2021.9561671" target="_blank" class="doilogo">DOI</a></li>
+      </ol>
+    </section>
+
+    <footer>Last update: January 2023</footer>
+
+    <!-- Scroll to top button -->
+    <i class="scroll-up" id="scroll-up"
+      ><img
+        src="assets/icons/icons8-upward-arrow.png"
+        class="socicon up-arrow"
+        alt="up-arrow"
+    /></i>
+
+    <!-- Web page script -->
+    <script src="assets/js/app.js"></script>
+
+    <!-- Ion icons CDN -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+  </body>
+</html>
