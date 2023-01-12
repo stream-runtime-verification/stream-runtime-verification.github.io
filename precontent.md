@@ -21,7 +21,6 @@ specification.
 %
 At runtime, the monitor inspects traces of the execution of the system
 under analysis, detecting violations of the specification.
-% Trigger
 
 ![SRV architecture](assets/images/srv.svg){ width=600px }
 
