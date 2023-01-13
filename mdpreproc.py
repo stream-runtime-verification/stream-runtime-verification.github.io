@@ -6,37 +6,52 @@ import sys
 if len(sys.argv)<2:
     exit(-1)
 refsfile = sys.argv[1]
-refslist = []
+
+citedatas = {
+    "srv": {
+        "prefix": "srv",
+        "parseprefix": "srv",
+        "refslist": []
+        },
+    "other": {
+        "prefix": "",
+        "parseprefix": "",
+        "refslist": []
+        }}
 
 # Text section
-def getrefint(refid):
-    global refslist
+def getrefint(datakey, refid):
+    global citedatas
+    refslist = citedatas[datakey]["refslist"]
     for ix, itemid in enumerate(refslist):
         if refid == itemid:
             return ix+1
     refslist.append(refid)
+    citedatas[datakey]["refslist"] = refslist
     return len(refslist)
 
-def formatcite(citeid):
-    citeint = getrefint(citeid)
+def formatcite(datakey, citeid):
+    global citedatas
+    citeint = getrefint(datakey, citeid)
     retline = "[" + str(citeint) + "](#" + citeid + ")"
     return retline
 
-def processcites(rawcites):
+def processcites(datakey, rawcites):
     cites = list(map(lambda x: x.strip(), rawcites.split(",")))
-    retline = '<sup>\\['
-    retline = retline + formatcite(cites[0])
+    retline = '<sup>' + citedatas[datakey]["prefix"] + '\\['
+    retline = retline + formatcite(datakey, cites[0])
     for cite in cites[1:]:
-        retline = retline + ", " + formatcite(cite)
+        retline = retline + ", " + formatcite(datakey, cite)
     retline = retline + '\\]</sup>'
     return retline
 
-def findcites(line):
-    citations = line.split("\\cite{")
+def findcites(datakey, line):
+    global citedatas
+    citations = line.split("\\cite" + citedatas[datakey]["parseprefix"] +"{")
     retline = citations[0]
     for citation in citations[1:]:
         cs = citation.split("}", 1)
-        retline = retline + processcites(cs[0])
+        retline = retline + processcites(datakey, cs[0])
         retline = retline + cs[1]
     return retline
 
@@ -89,22 +104,30 @@ def printentry(entry):
     entrystr = entrystr + printdoi(entry)
     return entrystr
 
-def printbib():
+def printbib(datakey):
     global refsfile
+    global citedatas
     with open(refsfile) as f:
         bibrefs = json.load(f)
+    refslist = citedatas[datakey]["refslist"]
     referencedbibs = {x["id"]:x for x in bibrefs if x["id"] in refslist}
     bibdata = list(map(lambda x: referencedbibs[x], refslist))
     for entry in bibdata:
         print(printentry(entry))
 
+# Main section
 def processline(line):
     if line == "\\thebibliography":
-        printbib()
+        printbib("other")
+        return
+    if line == "\\thebibliographysrv":
+        printbib("srv")
         return
     if line.lstrip().startswith("%"):
         return
-    print(findcites(line))
+    line = findcites("srv", line)
+    line = findcites("other", line)
+    print(line)
     return
 
 for line in sys.stdin:
