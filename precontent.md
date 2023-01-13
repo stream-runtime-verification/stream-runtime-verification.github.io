@@ -37,7 +37,7 @@ rewriting \cite{rosu05rewriting}.
 % SRV
 %
 Stream runtime verification (SRV), pioneered by
-Lola \cite{dangelo05lola}, defines monitors declaratively by
+Lola \citesrv{dangelo05lola}, defines monitors declaratively by
 equations that define the dependencies between output streams of
 results and input streams of observations, where the types of the
 streams and operations can be rich types of data.
@@ -49,7 +49,7 @@ Examples include counting events, specifying and computing robustness
 values, generating models, quantitative verdicts and calculating
 target spatial coordinates.
 %
-See \cite{dangelo05lola,faymonville16stream,gorostiaga21striver, danielsson19decentralized} for examples illustrating the
+See \citesrv{dangelo05lola,faymonville16stream,gorostiaga21striver, danielsson19decentralized} for examples illustrating the
 expressivity of SRV languages.
 %
 The keystone of SRV is to separate two concerns: the temporal
@@ -67,9 +67,9 @@ in the jargon of SRV) whose implementation is independent of the model
 of time.
 %
 Most system include a handful of wired data
-types (e.g. \cite{dangelo05lola,faymonville19streamlab,convent18tessla})
+types (e.g. \citesrv{dangelo05lola,faymonville19streamlab,convent18tessla})
 but others study how to transparently incorporate data-types from
-programming languages \cite{ceresa20declarative}.
+programming languages \citesrv{ceresa20declarative}.
 
 ### Runtime verification vs. static verification.
 Static verification techniques like model checking intend to show that
@@ -116,12 +116,12 @@ is known to be easy for purely past or purely future properties.
 %
 We detail in the paper a syntactic characterization of
 *efficiently monitorable* specifications (introduced
-in \cite{dangelo05lola}), for which the space requirement of the
+in \citesrv{dangelo05lola}), for which the space requirement of the
 online monitoring algorithm is independent of the size of the trace,
 and linear in the specification size.
 %
 This property was later popularized as *trace length
-independence* \cite{bauer13from} and is a very desirable property as
+independence* \citesrv{bauer13from} and is a very desirable property as
 it allows online monitors to scale to arbitrarily large traces.
 %
 In practice, most properties of interest in online monitoring can be
@@ -144,8 +144,8 @@ same index in their sequences are considered to have occurred at the
 same time.
 %
 Examples of synchronous SRV formalisms include the original
-Lola \cite{dangelo05lola} and systems like
-Copilot \cite{pike10copilot}.
+Lola \citesrv{dangelo05lola} and systems like
+Copilot \citesrv{pike10copilot}.
 %
 Other formalisms that can be easily described using SRV include
 Mission-time LTL \cite{reinbacher14temporal} and Functional Reactive
@@ -161,8 +161,8 @@ describe monitors that depend on future observations.
 
 %
 There have been approaches to extend SRV to real-time event streams,
-including RTLola \cite{faymonville17realtime},
-TeSSLa \cite{convent18tessla} and Striver \cite{gorostiaga21striver},
+including RTLola \citesrv{faymonville17realtime},
+TeSSLa \citesrv{convent18tessla} and Striver \citesrv{gorostiaga21striver},
 which consider streams to be sequences of timed events.
 %
 Events contain data and are time-stamped with the instant of time at
@@ -174,7 +174,7 @@ time stamps.
 %
 These formalisms are known as asynchronous or real-time SRV.
 %
-See \cite{gorostiaga20unifying} for a expressiveness comparison
+See \citesrv{gorostiaga20unifying} for a expressiveness comparison
 between synchronous time and asynchronous SRV.
 
 ![Synchronous vs. asynchronous streams](assets/images/synchasynch.svg){ width=600px }
@@ -190,13 +190,13 @@ This is useful to reuse repetitive specifications and capture the
 essence of a stream definition, abstracting away the irrelevant
 specific values
 %
-This feature is implemented in Lola2.0 \cite{faymonville16stream} as
-well as in TeSSLa \cite{convent18tessla} using an ad-hoc macro feature
-in the tool chain; and in HLola \cite{ceresa20declarative} and HStriver
-\cite{gorostiaga21hstriver} as functions in the host language.
+This feature is implemented in Lola2.0 \citesrv{faymonville16stream} as
+well as in TeSSLa \citesrv{convent18tessla} using an ad-hoc macro feature
+in the tool chain; and in HLola \citesrv{ceresa20declarative} and HStriver
+\citesrv{gorostiaga21hstriver} as functions in the host language.
 
 ### Dynamic parameterization
-Some tools like Lola2.0 \cite{faymonville16stream} offer the
+Some tools like Lola2.0 \citesrv{faymonville16stream} offer the
 possibility of instantiating a parameterized stream with values that
 are discovered in the middle of a trace.
 
@@ -232,4 +232,8 @@ some typical mission scenarios.
   ></iframe>
 
 ## @bibliography. Bibliography {#bibliography}
+### SRV Bibliography
+\thebibliographysrv
+
+### Other Bibliography
 \thebibliography
